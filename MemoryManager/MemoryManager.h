@@ -20,7 +20,7 @@ class MemoryManager {
     private:
         unsigned wordSizeInBytes;
         std::function<int(int, void *)> allocatorFunc;
-        size_t sizeInWords;
+        size_t memorySizeInWords;
         bool* memoryList;
 };
 

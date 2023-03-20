@@ -2,12 +2,15 @@
 using namespace std;
 
 int main() {
-    bool test[3];
-    test[0] = 5;
+    bool* test = new bool[3];
+    
+    cout << test << endl;
 
-    for (bool i : test) {
-        cout << i << endl;
-    }
+    void *hmmm = test;
+
+    cout << (int)hmmm + 1 << endl;
+
+    delete[] test;
 
     return 0;
 }

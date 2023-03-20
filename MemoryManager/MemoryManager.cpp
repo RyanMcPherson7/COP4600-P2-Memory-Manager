@@ -1,9 +1,10 @@
 #include "MemoryManager.h"
+#include <cmath>
 
 MemoryManager::MemoryManager(unsigned wordSize, std::function<int(int, void *)> allocator) {
     wordSizeInBytes = wordSize;
     allocatorFunc = allocator;
-    sizeInWords = 0;
+    memorySizeInWords = 0;
     memoryList = nullptr;
 }
 
@@ -20,7 +21,7 @@ void MemoryManager::initialize(size_t sizeInWords) {
         sizeInWords = 65536;
     }
 
-    this->sizeInWords = sizeInWords;
+    this->memorySizeInWords = sizeInWords;
     memoryList = new bool[sizeInWords];
 
     /*
@@ -37,19 +38,35 @@ void MemoryManager::initialize(size_t sizeInWords) {
 void MemoryManager::shutdown() {
     if (memoryList == nullptr) return;
 
-    sizeInWords = 0;
+    memorySizeInWords = 0;
     delete[] memoryList;
     memoryList = nullptr;
 }
 
 
 void *MemoryManager::allocate(size_t sizeInBytes) {
-    return nullptr;
+    unsigned int neededWords = ceil((double)wordSizeInBytes / (double)sizeInBytes);
+
+    if (neededWords > memorySizeInWords) {
+        return nullptr;
+    } 
+
+    int wordOffset = allocatorFunc(neededWords, memoryList);
+
+    if (wordOffset == -1) {
+        return nullptr;
+    }
+
+    // marking memory as in use
+    for (int i = 0; i < neededWords; i++) {
+        memoryList[wordOffset + i] = 1;
+    }
 }
 
 
 void MemoryManager::free(void *address) {
-
+    unsigned int targetAddressMapping = (int)address - (int)memoryList;
+    memoryList[targetAddressMapping] = 0;
 }
 
 
@@ -84,7 +101,7 @@ void *MemoryManager::getMemoryStart() {
 
 
 unsigned MemoryManager::getMemoryLimit() {
-    return (int)memoryList + wordSizeInBytes * sizeInWords;
+    return (int)memoryList + wordSizeInBytes * memorySizeInWords;
 }
 
 
