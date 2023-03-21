@@ -32,8 +32,8 @@ Expected:
 [0xf, 0xfe, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
 
 Got:
-[0x3f, 0xe6, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
-[INCORRECT]
+[0xf, 0xfe, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
+[CORRECT]
 
 
 Testing getList
@@ -41,17 +41,17 @@ Expected:
 [4] - [5] - [18] - [78]
 
 Got:
-[6] - [3] - [11] - [2] - [18] - [78]
-[INCORRECT]
+[4] - [5] - [18] - [78]
+[CORRECT]
 
 Testing dumpMemoryMap
 Expected: [4, 5] - [18, 78]
-Got:[6, 3] - [11, 2] - [18, 78]
-[INCORRECT]
+Got:[4, 5] - [18, 78]
+[CORRECT]
 
-Score: 3 / 38
+Score: 6 / 38
 Test Case: Best Fit 2
-Testing Memory Manager state after initial allocations     
+Testing Memory Manager state after initial allocations      
 Testing getBitmap
 Expected:
 [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
@@ -69,7 +69,7 @@ Got:
 [60] - [36]
 [CORRECT]
 
-Testing Memory Manager state after freeing specific areas  
+Testing Memory Manager state after freeing specific areas   
 Testing getBitmap
 Expected:
 [0xff, 0xc3, 0xff, 0xf8, 0x9f, 0xff, 0xfd, 0xf, 0x0, 0x0, 0x0, 0x0]
@@ -95,8 +95,8 @@ Expected:
 [0xff, 0xc3, 0xff, 0xf8, 0x9f, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
 
 Got:
-[0xff, 0xc3, 0xff, 0xf8, 0xbf, 0xff, 0xfd, 0xf, 0x0, 0x0, 0x0, 0x0]
-[INCORRECT]
+[0xff, 0xc3, 0xff, 0xf8, 0x9f, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
+[CORRECT]
 
 
 Testing getList
@@ -104,8 +104,8 @@ Expected:
 [10] - [4] - [24] - [3] - [37] - [2] - [60] - [36]
 
 Got:
-[10] - [4] - [24] - [3] - [38] - [1] - [49] - [1] - [60] - [36]
-[INCORRECT]
+[10] - [4] - [24] - [3] - [37] - [2] - [60] - [36]
+[CORRECT]
 
 Allocating 2 words
 Testing Memory Manager state
@@ -115,8 +115,8 @@ Expected:
 [0xff, 0xc3, 0xff, 0xf8, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
 
 Got:
-[0xff, 0xc3, 0xff, 0xfb, 0xbf, 0xff, 0xfd, 0xf, 0x0, 0x0, 0x0, 0x0]
-[INCORRECT]
+[0xff, 0xc3, 0xff, 0xf8, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
+[CORRECT]
 
 
 Testing getList
@@ -124,8 +124,8 @@ Expected:
 [10] - [4] - [24] - [3] - [60] - [36]
 
 Got:
-[10] - [4] - [26] - [1] - [38] - [1] - [49] - [1] - [60] - [36]
-[INCORRECT]
+[10] - [4] - [24] - [3] - [60] - [36]
+[CORRECT]
 
 Allocating 3 words
 Testing Memory Manager state
@@ -135,8 +135,8 @@ Expected:
 [0xff, 0xc3, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
 
 Got:
-[0xff, 0xdf, 0xff, 0xfb, 0xbf, 0xff, 0xfd, 0xf, 0x0, 0x0, 0x0, 0x0]
-[INCORRECT]
+[0xff, 0xc3, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
+[CORRECT]
 
 
 Testing getList
@@ -144,8 +144,8 @@ Expected:
 [10] - [4] - [60] - [36]
 
 Got:
-[13] - [1] - [26] - [1] - [38] - [1] - [49] - [1] - [60] - [36]
-[INCORRECT]
+[10] - [4] - [60] - [36]
+[CORRECT]
 
 Allocating 4 words
 Testing Memory Manager state
@@ -155,8 +155,8 @@ Expected:
 [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
 
 Got:
-[0xff, 0xdf, 0xff, 0xfb, 0xbf, 0xff, 0xfd, 0xff, 0x0, 0x0, 0x0, 0x0]
-[INCORRECT]
+[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]
+[CORRECT]
 
 
 Testing getList
@@ -164,15 +164,15 @@ Expected:
 [60] - [36]
 
 Got:
-[13] - [1] - [26] - [1] - [38] - [1] - [49] - [1] - [64] - [32]
-[INCORRECT]
+[60] - [36]
+[CORRECT]
 
 Testing dumpMemoryMap
 Expected: [60, 36]
-Got:[13, 1] - [26, 1] - [38, 1] - [49, 1] - [64, 32]       
-[INCORRECT]
+Got:[60, 36]
+[CORRECT]
 
-Score: 7 / 38
+Score: 19 / 38
 Test Case: New allocatorAllocating 4 words
 Testing Memory Manager state
 
@@ -187,10 +187,10 @@ Got:
 
 Testing getList
 Expected:
-[10] - [13] - [33] - [8] - [51] - [4] - [69] - [19]        
+[10] - [13] - [33] - [8] - [51] - [4] - [69] - [19]
 
 Got:
-[10] - [13] - [33] - [8] - [51] - [4] - [69] - [19]        
+[10] - [13] - [33] - [8] - [51] - [4] - [69] - [19]
 [CORRECT]
 
 Allocating 4 words
@@ -238,11 +238,11 @@ Expected: [14, 9] - [37, 4] - [51, 4] - [69, 19]
 Got:[14, 9] - [37, 4] - [51, 4] - [69, 19]
 [CORRECT]
 
-Score: 14 / 38
-Test Case: invalid allocation, over the allowed amount     
-[INCORRECT]
+Score: 26 / 38
+Test Case: invalid allocation, over the allowed amount      
+[CORRECT]
 
-Score: 14 / 38
+Score: 27 / 38
 Test Case: repeated shutdown
 Generating Memory Manager...
 shutting down Memory Manager...
@@ -271,12 +271,12 @@ Expected: [1, 3] - [7, 13]
 Got:[1, 3] - [7, 13]
 [CORRECT]
 
-Score: 17 / 38
+Score: 30 / 38
 Test Case: max initialization
-[INCORRECT]
+[CORRECT]
 
-Score: 17 / 38
-Test Case: testGetters, wordSize = 8, numberOfWords = 26   
+Score: 31 / 38
+Test Case: testGetters, wordSize = 8, numberOfWords = 26    
 Testing getMemoryLimit
 Expected: 208
 Got:208
@@ -287,10 +287,10 @@ Expected: 8
 Got:8
 [CORRECT]
 
-Score: 19 / 38
+Score: 33 / 38
 Test Case: Reading memory using GetMemoryStart
 Expected: 1
 Got: 72340172838076673
 [INCORRECT]
 
-Score: 19 / 38
+Score: 33 / 38

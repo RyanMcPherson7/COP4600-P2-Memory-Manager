@@ -241,7 +241,7 @@ int bestFit(int sizeInWords, void *list) {
     // start addresses are odd, lengths are even
     for (int i = 1; i < numHoles * 2; i += 2) {
         int currSpaceLeft = holeList[i + 1] - sizeInWords;
-        if (currSpaceLeft > 0 && currSpaceLeft < minSpaceLeft) {
+        if (currSpaceLeft >= 0 && currSpaceLeft < minSpaceLeft) {
             minSpaceLeft = currSpaceLeft;
             chosenHoleOffset = holeList[i];
         }
@@ -263,7 +263,7 @@ int worstFit(int sizeInWords, void *list) {
     // start addresses are odd, lengths are even
     for (int i = 1; i < numHoles * 2; i += 2) {
         int currSpaceLeft = holeList[i + 1] - sizeInWords;
-        if (currSpaceLeft > 0 && currSpaceLeft > maxSpaceLeft) {
+        if (currSpaceLeft >= 0 && currSpaceLeft > maxSpaceLeft) {
             maxSpaceLeft = currSpaceLeft;
             chosenHoleOffset = holeList[i];
         }

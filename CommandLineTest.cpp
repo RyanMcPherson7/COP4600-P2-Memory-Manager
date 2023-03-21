@@ -92,7 +92,7 @@ int main()
     score += testComplexBestFit(); // 13
     std::cout << "Score: " << score << " / " <<  maxScore << std::endl;
     
-    score += testNewAllocator(); // 7
+    score += testNewAllocator(); // 7u  
     std::cout << "Score: " << score << " / " <<  maxScore << std::endl;
     
     score += testInvalidAllocate(); // 1
