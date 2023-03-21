@@ -1,16 +1,28 @@
 #include <iostream>
+#include "../MemoryManager/MemoryManager.h"
 using namespace std;
 
 int main() {
-    bool* test = new bool[3];
-    
-    cout << test << endl;
+    // initialize
+    unsigned int  wordSize = 8;
+    size_t numberOfWords = 26;
+    MemoryManager memoryManager(wordSize, bestFit);
+    memoryManager.initialize(numberOfWords);
 
-    void *hmmm = test;
+    // do stuff
+    uint64_t* testArray1 = static_cast<uint64_t*>(memoryManager.allocate(sizeof(uint64_t) * 10));
+    uint64_t* testArray2 = static_cast<uint64_t*>(memoryManager.allocate(sizeof(uint64_t) * 2));
+    uint64_t* testArray3 = static_cast<uint64_t*>(memoryManager.allocate(sizeof(uint64_t) * 2));
+    uint64_t* testArray4 = static_cast<uint64_t*>(memoryManager.allocate(sizeof(uint64_t) * 6));
+    memoryManager.free(testArray1);
+    memoryManager.free(testArray3);
 
-    cout << (int)hmmm + 1 << endl;
+    // gen bitmap
+    uint8_t* bitmap = static_cast<uint8_t*>(memoryManager.getBitmap());
 
-    delete[] test;
+    for (int i = 0; i < 6; i++) {
+        cout << std::hex <<  (int)bitmap[i] << endl;
+    }
 
     return 0;
 }
