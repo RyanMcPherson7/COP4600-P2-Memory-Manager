@@ -48,7 +48,7 @@ void MemoryManager::shutdown() {
 
     // free allocated addresses created by allocate()
     for (auto it = startAddrToLenMap.begin(); it != startAddrToLenMap.end();) {
-        delete it->first;
+        delete[] it->first;
         it = startAddrToLenMap.erase(it);
     }
 }
@@ -76,18 +76,23 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
     int length = sizeInBytes / wordSizeInBytes;
     int* startAddrPtr = new int(startAddress);
 
-    cout << "allocate difference from start address: " << startAddress - (int)memoryList << endl;
+    uint64_t* newMemoryAddrList = new uint64_t[length];
+
+    // build memory address list
+    for (int i = 0; i < length; i++) {
+        newMemoryAddrList[i] = startAddress + i;
+    }
 
     // store allocated memory for later deletion
-    startAddrToLenMap.emplace(startAddrPtr, length);
+    startAddrToLenMap.emplace(newMemoryAddrList, length);
 
-    return startAddrPtr;
+    return newMemoryAddrList;
 }
 
 
 void MemoryManager::free(void *address) {
-    int startAddress = *((int*)address);
-    int length = startAddrToLenMap.at((int*)address);
+    int startAddress = ((uint64_t*)address)[0];
+    int length = startAddrToLenMap.at((uint64_t*)address);
     unsigned int targetAddressMapping = (startAddress - (int)memoryList) / wordSizeInBytes;
 
     // marking memory as free with 0s
@@ -96,8 +101,8 @@ void MemoryManager::free(void *address) {
     }
 
     // free allocated address
-    startAddrToLenMap.erase((int*)address);
-    delete[] (int*)address;
+    startAddrToLenMap.erase((uint64_t*)address);
+    delete[] (uint64_t*)address;
 }
 
 
@@ -177,16 +182,16 @@ void *MemoryManager::getBitmap() {
     bitmapVec.push_back(0);
 
     // generate bitmap
-    int i = memorySizeInWords - 1;
-    while (i >= 0) {
+    int i = 0;
+    while (i < memorySizeInWords) {
         int entry = 0;
         int power = 1;
         int wordsLeftToView = 8;
-        while (i >= 0 && wordsLeftToView > 0) {
+        while (i < memorySizeInWords && wordsLeftToView > 0) {
             entry += memoryList[i] * power;
             power *= 2;
             wordsLeftToView--;
-            i--;
+            i++;
         }
 
         bitmapSize++;
