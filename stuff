@@ -1,0 +1,294 @@
+Test Case: First Fit 1
+allocating and freeing memory...
+Testing Memory Manager state after allocations and frees
+Testing getBitmap
+Expected: 
+[0x0, 0xcc, 0xf, 0x0]
+
+Got:
+[0xc0, 0xcf, 0x0, 0x0]
+[INCORRECT]
+
+
+Testing getList
+Expected: 
+[0] - [10] - [12] - [2] - [20] - [6]
+
+Got:
+[0] - [10] - [12] - [2] - [20] - [6]
+[CORRECT]
+
+Testing dumpMemoryMap
+Expected: [0, 10] - [12, 2] - [20, 6]
+Got:[0, 10] - [12, 2] - [20, 6]
+[CORRECT]
+
+Score: 2 / 38
+Test Case: Best Fit 1
+allocating 4 words
+Testing Memory Manager state after allocation
+Testing getBitmap
+Expected: 
+[0xf, 0xfe, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]        
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xc0, 0x67, 0xfc]      
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[4] - [5] - [18] - [78]
+
+Got:
+[6] - [3] - [11] - [2] - [18] - [78]
+[INCORRECT]
+
+Testing dumpMemoryMap
+Expected: [4, 5] - [18, 78]
+Got:[6, 3] - [11, 2] - [18, 78]
+[INCORRECT]
+
+Score: 2 / 38
+Test Case: Best Fit 2
+Testing Memory Manager state after initial allocations
+Testing getBitmap
+Expected:
+[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]  
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0xf0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff] 
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[60] - [36]
+
+Got:
+[60] - [36]
+[CORRECT]
+
+Testing Memory Manager state after freeing specific areas
+Testing getBitmap
+Expected:
+[0xff, 0xc3, 0xff, 0xf8, 0x9f, 0xff, 0xfd, 0xf, 0x0, 0x0, 0x0, 0x0]  
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0xf0, 0xbf, 0xff, 0xf9, 0x1f, 0xff, 0xc3, 0xff] 
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[10] - [4] - [24] - [3] - [37] - [2] - [49] - [1] - [60] - [36]      
+
+Got:
+[10] - [4] - [24] - [3] - [37] - [2] - [49] - [1] - [60] - [36]      
+[CORRECT]
+
+Allocating 1 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0xc3, 0xff, 0xf8, 0x9f, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]  
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0xf0, 0xbf, 0xff, 0xfd, 0x1f, 0xff, 0xc3, 0xff]
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[10] - [4] - [24] - [3] - [37] - [2] - [60] - [36]
+
+Got:
+[10] - [4] - [24] - [3] - [38] - [1] - [49] - [1] - [60] - [36]      
+[INCORRECT]
+
+Allocating 2 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0xc3, 0xff, 0xf8, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]  
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0xf0, 0xbf, 0xff, 0xfd, 0xdf, 0xff, 0xc3, 0xff] 
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[10] - [4] - [24] - [3] - [60] - [36]
+
+Got:
+[10] - [4] - [26] - [1] - [38] - [1] - [49] - [1] - [60] - [36]      
+[INCORRECT]
+
+Allocating 3 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0xc3, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]  
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0xf0, 0xbf, 0xff, 0xfd, 0xdf, 0xff, 0xfb, 0xff]
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[10] - [4] - [60] - [36]
+
+Got:
+[13] - [1] - [26] - [1] - [38] - [1] - [49] - [1] - [60] - [36]      
+[INCORRECT]
+
+Allocating 4 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf, 0x0, 0x0, 0x0, 0x0]  
+
+Got:
+[0x0, 0x0, 0x0, 0x0, 0xff, 0xbf, 0xff, 0xfd, 0xdf, 0xff, 0xfb, 0xff] 
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[60] - [36]
+
+Got:
+[13] - [1] - [26] - [1] - [38] - [1] - [49] - [1] - [64] - [32]      
+[INCORRECT]
+
+Testing dumpMemoryMap
+Expected: [60, 36]
+Got:[13, 1] - [26, 1] - [38, 1] - [49, 1] - [64, 32]
+[INCORRECT]
+
+Score: 4 / 38
+Test Case: New allocatorAllocating 4 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0x3, 0x80, 0xff, 0x1, 0xfe, 0x87, 0xff, 0x1f, 0x0, 0x0]       
+
+Got:
+[0x0, 0x0, 0xf8, 0xff, 0xe1, 0x7f, 0x80, 0xff, 0x1, 0xc0, 0xff]
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[10] - [13] - [33] - [8] - [51] - [4] - [69] - [19]
+
+Got:
+[10] - [13] - [33] - [8] - [51] - [4] - [69] - [19]
+[CORRECT]
+
+Allocating 4 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0x3f, 0x80, 0xff, 0x1, 0xfe, 0x87, 0xff, 0x1f, 0x0, 0x0]      
+
+Got:
+[0x0, 0x0, 0xf8, 0xff, 0xe1, 0x7f, 0x80, 0xff, 0x1, 0xfc, 0xff]      
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[14] - [9] - [33] - [8] - [51] - [4] - [69] - [19]
+
+Got:
+[14] - [9] - [33] - [8] - [51] - [4] - [69] - [19]
+[CORRECT]
+
+Allocating 4 words
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0xff, 0x3f, 0x80, 0xff, 0x1f, 0xfe, 0x87, 0xff, 0x1f, 0x0, 0x0]     
+
+Got:
+[0x0, 0x0, 0xf8, 0xff, 0xe1, 0x7f, 0xf8, 0xff, 0x1, 0xfc, 0xff]      
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[14] - [9] - [37] - [4] - [51] - [4] - [69] - [19]
+
+Got:
+[14] - [9] - [37] - [4] - [51] - [4] - [69] - [19]
+[CORRECT]
+
+Testing dumpMemoryMap
+Expected: [14, 9] - [37, 4] - [51, 4] - [69, 19]
+Got:[14, 9] - [37, 4] - [51, 4] - [69, 19]
+[CORRECT]
+
+Score: 8 / 38
+Test Case: invalid allocation, over the allowed amount
+[INCORRECT]
+
+Score: 8 / 38
+Test Case: repeated shutdown
+Generating Memory Manager...
+shutting down Memory Manager...
+initializing Memory Manager...
+Testing Memory Manager state
+
+Testing getBitmap
+Expected:
+[0x71, 0x0, 0x0]
+
+Got:
+[0x0, 0xe0, 0x8]
+[INCORRECT]
+
+
+Testing getList
+Expected:
+[1] - [3] - [7] - [13]
+
+Got:
+[1] - [3] - [7] - [13]
+[CORRECT]
+
+Testing dumpMemoryMap
+Expected: [1, 3] - [7, 13]
+Got:[1, 3] - [7, 13]
+[CORRECT]
+
+Score: 10 / 38
+Test Case: max initialization
+[INCORRECT]
+
+Score: 10 / 38
+Test Case: testGetters, wordSize = 8, numberOfWords = 26
+Testing getMemoryLimit
+Expected: 208
+Got:208
+[CORRECT]
+
+Testing getWordSize
+Expected: 8
+Got:8
+[CORRECT]
+
+Score: 12 / 38
+Test Case: Reading memory using GetMemoryStart
+Expected: 12
+Got: 9223390801041502378
+[INCORRECT]

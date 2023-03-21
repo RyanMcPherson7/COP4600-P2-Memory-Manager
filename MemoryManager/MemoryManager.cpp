@@ -47,6 +47,7 @@ void MemoryManager::shutdown() {
     // free allocated addresses created by allocate()
     for (auto& address : allocatedAddressesSet) {
         delete[] address;
+        allocatedAddressesSet.erase((int*)address);
     }
 }
 
@@ -130,10 +131,10 @@ void *MemoryManager::getList() {
     }
 
     uint16_t numHoles = 0;
-    vector<uint16_t> holesInfoVector;
+    vector<uint16_t> holesInfoVec;
 
     // temporary placeholder
-    holesInfoVector.push_back(0);
+    holesInfoVec.push_back(0);
 
     // find holes
     for (unsigned int i = 0; i < memorySizeInWords; i++) {
@@ -143,19 +144,19 @@ void *MemoryManager::getList() {
                 i++;
             }
 
-            holesInfoVector.push_back(startOffset);
-            holesInfoVector.push_back(i - startOffset);
+            holesInfoVec.push_back(startOffset);
+            holesInfoVec.push_back(i - startOffset);
             numHoles++;
         }
     }
 
     // add back final number of holes
-    holesInfoVector.at(0) = numHoles;
+    holesInfoVec.at(0) = numHoles;
 
     // convert vector to standard array
     uint16_t* holesInfoArray = new uint16_t[numHoles * 2 + 1];
-    for (unsigned int i = 0; i < holesInfoVector.size(); i++) { 
-        holesInfoArray[i] = holesInfoVector.at(i);
+    for (unsigned int i = 0; i < holesInfoVec.size(); i++) { 
+        holesInfoArray[i] = holesInfoVec.at(i);
     }
 
     return holesInfoArray;
@@ -163,7 +164,45 @@ void *MemoryManager::getList() {
 
 
 void *MemoryManager::getBitmap() {
-    return nullptr;
+    vector<uint8_t> bitmapVec;
+    unsigned int bitmapSize = 0;
+
+    // placeholders
+    bitmapVec.push_back(0);
+    bitmapVec.push_back(0);
+
+    // generate bitmap
+    int i = memorySizeInWords - 1;
+    while (i >= 0) {
+        int entry = 0;
+        int power = 1;
+        int wordsLeftToView = 8;
+        while (i >= 0 && wordsLeftToView > 0) {
+            entry += memoryList[i] * power;
+            power *= 2;
+            wordsLeftToView--;
+            i--;
+        }
+
+        bitmapSize++;
+        bitmapVec.push_back(entry);
+    }
+
+    // include bitmap size
+    if (bitmapSize == (uint8_t)bitmapSize) {
+        bitmapVec.at(0) = (uint8_t)bitmapSize;
+    } else {
+        bitmapVec.at(0) = INT8_MAX;
+        bitmapVec.at(1) = bitmapSize - INT8_MAX;
+    }
+
+    // convert vector to standard array
+    uint8_t* bitmapArray = new uint8_t[bitmapVec.size()];
+    for (unsigned int i = 0; i < bitmapVec.size(); i++) {
+        bitmapArray[i] = bitmapVec.at(i);
+    }
+
+    return bitmapArray;
 }
 
 
@@ -178,7 +217,7 @@ void *MemoryManager::getMemoryStart() {
 
 
 unsigned MemoryManager::getMemoryLimit() {
-    return (int)memoryList + wordSizeInBytes * memorySizeInWords;
+    return wordSizeInBytes * memorySizeInWords;
 }
 
 
