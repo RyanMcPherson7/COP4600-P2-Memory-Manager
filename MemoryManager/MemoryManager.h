@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <unordered_set>
 using namespace std;
 
 class MemoryManager {
@@ -22,6 +23,7 @@ class MemoryManager {
         std::function<int(int, void *)> allocatorFunc;
         size_t memorySizeInWords;
         bool* memoryList;
+        unordered_set<int*> allocatedAddressesSet;
 };
 
 int bestFit(int sizeInWords, void *list);

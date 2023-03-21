@@ -1,8 +1,6 @@
 #include "MemoryManager.h"
 #include <vector>
 
-#include <iostream>
-
 MemoryManager::MemoryManager(unsigned wordSize, std::function<int(int, void *)> allocator) {
     wordSizeInBytes = wordSize;
     allocatorFunc = allocator;
@@ -44,7 +42,10 @@ void MemoryManager::shutdown() {
     delete[] memoryList;
     memoryList = nullptr;
 
-    // FIXME: remove all allocated addresses from hash set
+    // free allocated addresses created by allocate()
+    for (auto& address : allocatedAddressesSet) {
+        delete[] address;
+    }
 }
 
 
@@ -66,10 +67,13 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
         memoryList[wordOffset + i] = 1;
     }
 
-    // FIXME: memory leak, use some structure (hash set) to store each tuple and remove them accordingly
     int* startAddrAndLen = new int[2];
     startAddrAndLen[0] = (int)memoryList + wordOffset * wordSizeInBytes; // start address
     startAddrAndLen[1] = sizeInBytes / wordSizeInBytes; // length
+
+    // store allocated memory for later deletion
+    allocatedAddressesSet.insert(startAddrAndLen);
+
     return startAddrAndLen;
 }
 
@@ -83,8 +87,9 @@ void MemoryManager::free(void *address) {
         memoryList[targetAddressMapping + i] = 0;
     }
 
-    // FIXME: memory leak, delete the address pointer when done using delete[]
-    // and update hash set
+    // free allocated address
+    delete[] (int*)address;
+    allocatedAddressesSet.erase((int*)address);
 }
 
 
@@ -103,8 +108,8 @@ void *MemoryManager::getList() {
         return nullptr;
     }
 
-    unsigned int numHoles = 0;
-    vector<unsigned int> holesInfoVector;
+    uint16_t numHoles = 0;
+    vector<uint16_t> holesInfoVector;
 
     // temporary placeholder
     holesInfoVector.push_back(0);
@@ -112,7 +117,7 @@ void *MemoryManager::getList() {
     // find holes
     for (unsigned int i = 0; i < memorySizeInWords; i++) {
         if (memoryList[i] == 0) {
-            unsigned int startOffset = i;
+            uint16_t startOffset = i;
             while (i < memorySizeInWords && memoryList[i] == 0) {
                 i++;
             }
@@ -127,16 +132,10 @@ void *MemoryManager::getList() {
     holesInfoVector.at(0) = numHoles;
 
     // convert vector to standard array
-    int* holesInfoArray = new int[numHoles * 2 + 1];
+    uint16_t* holesInfoArray = new uint16_t[numHoles * 2 + 1];
     for (unsigned int i = 0; i < holesInfoVector.size(); i++) { 
         holesInfoArray[i] = holesInfoVector.at(i);
     }
-
-    // FIXME: REMOVE FOR TESTING PURPOSES
-    // for (int i = 0; i < numHoles * 2 + 1; i++) {
-    //     cout << holesInfoArray[i] << " ";
-    // }
-    // cout << "from getList()" << endl;
 
     return holesInfoArray;
 }
@@ -163,7 +162,7 @@ unsigned MemoryManager::getMemoryLimit() {
 
 
 int bestFit(int sizeInWords, void *list) {
-    int* holeList = (int*)list;
+    uint16_t* holeList = (uint16_t*)list;
     int numHoles = holeList[0];
     int chosenHoleOffset = -1;
     int minSpaceLeft = INT32_MAX;
@@ -183,7 +182,7 @@ int bestFit(int sizeInWords, void *list) {
 
 
 int worstFit(int sizeInWords, void *list) {
-    int* holeList = (int*)list;
+    uint16_t* holeList = (uint16_t*)list;
     int numHoles = holeList[0];
     int chosenHoleOffset = -1;
     int maxSpaceLeft = INT32_MIN;
