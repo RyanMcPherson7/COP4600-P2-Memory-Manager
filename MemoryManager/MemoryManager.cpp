@@ -1,5 +1,7 @@
 #include "MemoryManager.h"
 #include <vector>
+#include <string>
+#include <fstream>
 
 MemoryManager::MemoryManager(unsigned wordSize, std::function<int(int, void *)> allocator) {
     wordSizeInBytes = wordSize;
@@ -99,7 +101,26 @@ void MemoryManager::setAllocator(std::function<int(int, void *)> allocator) {
 
 
 int MemoryManager::dumpMemoryMap(char *filename) {
-    return 69;
+    ofstream file;
+    file.open(filename);
+
+    if (!file.is_open()) {
+        return -1;
+    }
+    
+    uint16_t* holesList = (uint16_t*)getList();
+    uint16_t numHoles = holesList[0];
+
+    // write memory map to file
+    file << "[" + to_string(holesList[1]) + ", ";
+    for (int i = 2; i < numHoles * 2 - 1; i += 2) {
+        file << to_string(holesList[i]) + "] - [" + to_string(holesList[i + 1]) + ", ";
+    }
+    file << to_string(holesList[numHoles * 2]) + "]";
+
+    delete[] holesList;
+
+    return 0;
 }
 
 
@@ -177,6 +198,8 @@ int bestFit(int sizeInWords, void *list) {
         }
     }
 
+    delete[] (uint16_t*)list;
+
     return chosenHoleOffset;
 }
 
@@ -196,6 +219,8 @@ int worstFit(int sizeInWords, void *list) {
             chosenHoleOffset = holeList[i];
         }
     }
+
+    delete[] (uint16_t*)list;
 
     return chosenHoleOffset;
 }
