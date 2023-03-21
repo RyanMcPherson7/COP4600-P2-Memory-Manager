@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include <unordered_set>
+#include <unordered_map>
 using namespace std;
 
 class MemoryManager {
@@ -23,7 +23,7 @@ class MemoryManager {
         std::function<int(int, void *)> allocatorFunc;
         size_t memorySizeInWords;
         bool* memoryList;
-        unordered_set<int*> allocatedAddressesSet;
+        unordered_map<int*, int> startAddrToLenMap;
 };
 
 int bestFit(int sizeInWords, void *list);

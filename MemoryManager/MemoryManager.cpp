@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 
+#include <iostream>
+
 MemoryManager::MemoryManager(unsigned wordSize, std::function<int(int, void *)> allocator) {
     wordSizeInBytes = wordSize;
     allocatorFunc = allocator;
@@ -45,9 +47,9 @@ void MemoryManager::shutdown() {
     memoryList = nullptr;
 
     // free allocated addresses created by allocate()
-    for (auto& address : allocatedAddressesSet) {
-        delete[] address;
-        allocatedAddressesSet.erase((int*)address);
+    for (auto it = startAddrToLenMap.begin(); it != startAddrToLenMap.end();) {
+        delete it->first;
+        it = startAddrToLenMap.erase(it);
     }
 }
 
@@ -65,34 +67,37 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
         return nullptr;
     }
 
-    // marking memory as in use
+    // marking memory as in use with 1s
     for (int i = 0; i < neededWords; i++) {
         memoryList[wordOffset + i] = 1;
     }
 
-    int* startAddrAndLen = new int[2];
-    startAddrAndLen[0] = (int)memoryList + wordOffset * wordSizeInBytes; // start address
-    startAddrAndLen[1] = sizeInBytes / wordSizeInBytes; // length
+    int startAddress = (int)memoryList + wordOffset * wordSizeInBytes;
+    int length = sizeInBytes / wordSizeInBytes;
+    int* startAddrPtr = new int(startAddress);
+
+    cout << "allocate difference from start address: " << startAddress - (int)memoryList << endl;
 
     // store allocated memory for later deletion
-    allocatedAddressesSet.insert(startAddrAndLen);
+    startAddrToLenMap.emplace(startAddrPtr, length);
 
-    return startAddrAndLen;
+    return startAddrPtr;
 }
 
 
 void MemoryManager::free(void *address) {
-    int startAddress = ((int*)address)[0];
-    int length = ((int*)address)[1];
+    int startAddress = *((int*)address);
+    int length = startAddrToLenMap.at((int*)address);
     unsigned int targetAddressMapping = (startAddress - (int)memoryList) / wordSizeInBytes;
 
+    // marking memory as free with 0s
     for (int i = 0; i < length; i++) {
         memoryList[targetAddressMapping + i] = 0;
     }
 
     // free allocated address
+    startAddrToLenMap.erase((int*)address);
     delete[] (int*)address;
-    allocatedAddressesSet.erase((int*)address);
 }
 
 
