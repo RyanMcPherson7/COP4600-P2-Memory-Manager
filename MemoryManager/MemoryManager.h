@@ -22,8 +22,8 @@ class MemoryManager {
         unsigned wordSizeInBytes;
         std::function<int(int, void *)> allocatorFunc;
         size_t memorySizeInWords;
-        bool* memoryList;
-        unordered_map<int*, int> startAddrToLenMap;
+        char* memoryList;
+        unordered_map<char*, int> startAddrToLenMap;
 };
 
 int bestFit(int sizeInWords, void *list);

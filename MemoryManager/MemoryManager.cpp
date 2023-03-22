@@ -26,7 +26,7 @@ void MemoryManager::initialize(size_t sizeInWords) {
     }
 
     this->memorySizeInWords = sizeInWords;
-    memoryList = new bool[sizeInWords];
+    memoryList = new char[sizeInWords];
 
     /*
      * initialize all words to be free
@@ -40,17 +40,20 @@ void MemoryManager::initialize(size_t sizeInWords) {
 
 
 void MemoryManager::shutdown() {
-    if (memoryList == nullptr) return;
+    if (memoryList != nullptr) {
+        /*
+         * testReadingUsingGetMemoryStart() absolutely fucks this line
+         * has something to do with line 581
+         * it assigns values to items in memory
+         * the assignment seem to work but deleting the memory list segfaults
+         * it's completely random if we segfault or not
+        */
+        delete[] memoryList;
+    }
 
     memorySizeInWords = 0;
-    delete[] memoryList;
     memoryList = nullptr;
-
-    // free allocated addresses created by allocate()
-    for (auto it = startAddrToLenMap.begin(); it != startAddrToLenMap.end();) {
-        delete it->first;
-        it = startAddrToLenMap.erase(it);
-    }
+    startAddrToLenMap.clear();
 }
 
 
@@ -72,21 +75,21 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
         memoryList[wordOffset + i] = 1;
     }
 
-    int startAddress = (int)memoryList + wordOffset * wordSizeInBytes;
+    // calculating starting address and length
+    char* startAddress = memoryList + wordOffset * wordSizeInBytes;
     int length = sizeInBytes / wordSizeInBytes;
-    int* startAddrPtr = new int(startAddress);
 
     // store allocated memory for later deletion
-    startAddrToLenMap.emplace(startAddrPtr, length);
+    startAddrToLenMap.emplace(startAddress, length);
 
-    return startAddrPtr;
+    return static_cast<void*>(startAddress);
 }
 
 
 void MemoryManager::free(void *address) {
-    int startAddress = *((int*)address);
-    int length = startAddrToLenMap.at((int*)address);
-    unsigned int targetAddressMapping = (startAddress - (int)memoryList) / wordSizeInBytes;
+    char* startAddress = (char*)address;
+    int length = startAddrToLenMap.at((char*)address);
+    unsigned int targetAddressMapping = (startAddress - memoryList) / wordSizeInBytes;
 
     // marking memory as free with 0s
     for (int i = 0; i < length; i++) {
@@ -94,8 +97,7 @@ void MemoryManager::free(void *address) {
     }
 
     // free allocated address
-    startAddrToLenMap.erase((int*)address);
-    delete (int*)address;
+    startAddrToLenMap.erase((char*)address);
 }
 
 
