@@ -23,7 +23,7 @@ class MemoryManager {
         std::function<int(int, void *)> allocatorFunc;
         size_t memorySizeInWords;
         bool* memoryList;
-        unordered_map<uint64_t*, int> startAddrToLenMap;
+        unordered_map<int*, int> startAddrToLenMap;
 };
 
 int bestFit(int sizeInWords, void *list);

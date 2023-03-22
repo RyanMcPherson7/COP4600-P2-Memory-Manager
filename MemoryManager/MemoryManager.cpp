@@ -48,7 +48,7 @@ void MemoryManager::shutdown() {
 
     // free allocated addresses created by allocate()
     for (auto it = startAddrToLenMap.begin(); it != startAddrToLenMap.end();) {
-        delete[] it->first;
+        delete it->first;
         it = startAddrToLenMap.erase(it);
     }
 }
@@ -76,23 +76,16 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
     int length = sizeInBytes / wordSizeInBytes;
     int* startAddrPtr = new int(startAddress);
 
-    uint64_t* newMemoryAddrList = new uint64_t[length];
-
-    // build memory address list
-    for (int i = 0; i < length; i++) {
-        newMemoryAddrList[i] = startAddress + i;
-    }
-
     // store allocated memory for later deletion
-    startAddrToLenMap.emplace(newMemoryAddrList, length);
+    startAddrToLenMap.emplace(startAddrPtr, length);
 
-    return newMemoryAddrList;
+    return startAddrPtr;
 }
 
 
 void MemoryManager::free(void *address) {
-    int startAddress = ((uint64_t*)address)[0];
-    int length = startAddrToLenMap.at((uint64_t*)address);
+    int startAddress = *((int*)address);
+    int length = startAddrToLenMap.at((int*)address);
     unsigned int targetAddressMapping = (startAddress - (int)memoryList) / wordSizeInBytes;
 
     // marking memory as free with 0s
@@ -101,8 +94,8 @@ void MemoryManager::free(void *address) {
     }
 
     // free allocated address
-    startAddrToLenMap.erase((uint64_t*)address);
-    delete[] (uint64_t*)address;
+    startAddrToLenMap.erase((int*)address);
+    delete (int*)address;
 }
 
 
@@ -222,7 +215,7 @@ unsigned MemoryManager::getWordSize() {
 
 
 void *MemoryManager::getMemoryStart() {
-    return memoryList;
+    return (uint64_t*)memoryList;
 }
 
 
