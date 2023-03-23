@@ -64,7 +64,9 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
         return nullptr;
     }
 
-    int wordOffset = allocatorFunc(neededWords, getList());
+    uint16_t* list = (uint16_t*)getList();
+    int wordOffset = allocatorFunc(neededWords, list);
+    delete[] list;
 
     if (wordOffset == -1) {
         return nullptr;
@@ -87,6 +89,10 @@ void *MemoryManager::allocate(size_t sizeInBytes) {
 
 
 void MemoryManager::free(void *address) {
+    if (address == nullptr) {
+        return;
+    }
+
     char* startAddress = (char*)address;
     int length = startAddrToLenMap.at((char*)address);
     unsigned int targetAddressMapping = (startAddress - memoryList) / wordSizeInBytes;
@@ -242,7 +248,7 @@ int bestFit(int sizeInWords, void *list) {
         }
     }
 
-    delete[] (uint16_t*)list;
+    // delete[] (uint16_t*)list;
 
     return chosenHoleOffset;
 }
@@ -264,7 +270,7 @@ int worstFit(int sizeInWords, void *list) {
         }
     }
 
-    delete[] (uint16_t*)list;
+    // delete[] (uint16_t*)list;
 
     return chosenHoleOffset;
 }
