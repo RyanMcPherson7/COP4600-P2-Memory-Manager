@@ -41,13 +41,6 @@ void MemoryManager::initialize(size_t sizeInWords) {
 
 void MemoryManager::shutdown() {
     if (memoryList != nullptr) {
-        /*
-         * testReadingUsingGetMemoryStart() absolutely fucks this line
-         * has something to do with line 581
-         * it assigns values to items in memory
-         * the assignment seem to work but deleting the memory list segfaults
-         * it's completely random if we segfault or not
-        */
         delete[] memoryList;
     }
 
