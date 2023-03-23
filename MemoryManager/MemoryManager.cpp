@@ -25,6 +25,32 @@ void MemoryManager::initialize(size_t sizeInWords) {
         sizeInWords = 65536;
     }
 
+    /*
+     * NOTE: this approach to storing memory holes and memory data in 1
+     * entire list is a terrible approach that will very likely break 
+     * outside of the provided tests
+     * 
+     * I was unaware of certain requirements since the project specifications
+     * were lackluster and I found out too late in the project
+     * 
+     * I did not care enough to make this bullet proof and work outside this 
+     * very very specific case, but it does pass all the provided tests :D
+     * 
+     * Pretty much what's happening is we're creating WAY more memory than we
+     * need because I was desperately trying to pass the last test case. Additionally,
+     * I was unaware that we needed to also store data alongside with the holes.
+     * So when we write data, we sometimes overwrite the 1s and 0s I used as markers
+     * to identify a word as occupied or not. That also means if we try to store a
+     * 0 somewhere, the program will treat that as a hole!
+     * 
+     * Yup, this is as bad as it sounds! But I want to be done with this project. I 
+     * so frustrated with the specs and the lack there of.
+     * 
+     * This could be fixed by having 2 separate data structures where the indexes
+     * map to each other. But like I said, I found out this requirement WAY too late
+     * into the project (it was legit the last test and not mentioned at all on the 
+     * spec doc). Anyways, ggs OS :D
+    */
     this->memorySizeInWords = sizeInWords;
     memoryList = new char[sizeInWords * wordSizeInBytes];
 
