@@ -26,7 +26,7 @@ void MemoryManager::initialize(size_t sizeInWords) {
     }
 
     this->memorySizeInWords = sizeInWords;
-    memoryList = new char[sizeInWords];
+    memoryList = new char[sizeInWords * wordSizeInBytes];
 
     /*
      * initialize all words to be free
@@ -233,6 +233,10 @@ unsigned MemoryManager::getMemoryLimit() {
 
 
 int bestFit(int sizeInWords, void *list) {
+    if (list == nullptr) {
+        return -1;
+    }
+
     uint16_t* holeList = (uint16_t*)list;
     int numHoles = holeList[0];
     int chosenHoleOffset = -1;
@@ -248,13 +252,15 @@ int bestFit(int sizeInWords, void *list) {
         }
     }
 
-    // delete[] (uint16_t*)list;
-
     return chosenHoleOffset;
 }
 
 
 int worstFit(int sizeInWords, void *list) {
+    if (list == nullptr) {
+        return -1;
+    }
+
     uint16_t* holeList = (uint16_t*)list;
     int numHoles = holeList[0];
     int chosenHoleOffset = -1;
@@ -269,8 +275,6 @@ int worstFit(int sizeInWords, void *list) {
             chosenHoleOffset = holeList[i];
         }
     }
-
-    // delete[] (uint16_t*)list;
 
     return chosenHoleOffset;
 }
